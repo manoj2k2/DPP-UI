@@ -1,0 +1,6 @@
+.passport-list-panel { overflow: hidden; }
+.passport-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.small-button { height: 32px; padding: 0 10px; font-size: 11px; }
+.passport-ready { color: var(--teal); font-size: 11px; font-weight: 600; }
+.passport-error { margin: 12px 20px 0; padding: 10px 12px; border-radius: 6px; color: #b75a4c; background: #fae5df; font-size: 11px; }
+@media (max-width: 760px) { .passport-actions { justify-content: flex-start; } }

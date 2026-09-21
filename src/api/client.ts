@@ -8,11 +8,20 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-export type ApiList<T> = { value?: T[]; count?: number }
+export type ApiList<T> = T[] | { value?: T[]; items?: T[]; data?: T[]; count?: number }
+export function getApiItems<T>(response: ApiList<T> | undefined): T[] {
+  if (Array.isArray(response)) return response
+  return response?.value ?? response?.items ?? response?.data ?? []
+}
 export type LoginRequest = { email: string; password: string }
 export type RegisterRequest = { firstName: string; lastName: string; email: string; password: string; companyId?: string; role?: string }
 export type CompanyRequest = { companyName: string; vatNumber?: string; country?: string; industry?: string; employeeCount?: number }
 export type ProductRequest = { companyId: string; productNumber: string; productName: string; productCategory?: string; description?: string; weight?: number }
+export const demoProducts: ProductRequest[] = [
+  { companyId: '00000000-0000-0000-0000-000000000001', productNumber: 'AM-BCP-001', productName: 'Battery Cooling Plate', productCategory: 'Thermal management', description: 'Aluminium cooling plate for EV battery systems.', weight: 12.6 },
+  { companyId: '00000000-0000-0000-0000-000000000001', productNumber: 'AM-EDH-002', productName: 'E-Drive Housing', productCategory: 'Powertrain', description: 'Lightweight housing for electric drive units.', weight: 18.4 },
+  { companyId: '00000000-0000-0000-0000-000000000001', productNumber: 'AM-CPA-003', productName: 'Charge Port Assembly', productCategory: 'Electrical', description: 'Charge port assembly for passenger vehicles.', weight: 2.8 },
+]
 
 export const authApi = {
   login: (payload: LoginRequest) => api.post('/auth/login', payload),
