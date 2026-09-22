@@ -26,4 +26,6 @@ export const navItems = [
   { label: 'Passports', icon: 'QrCode', path: '/passports' },
   { label: 'Assessment', icon: 'ClipboardCheck', path: '/assessment' },
   { label: 'Reports', icon: 'BarChart3', path: '/reports' },
+  { label: 'Catena-X', icon: 'Network', path: '/integrations/catena-x' },
+  { label: 'EU Registry', icon: 'Landmark', path: '/registry' },
 ]

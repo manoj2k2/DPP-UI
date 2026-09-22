@@ -1,6 +1,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  ArrowLeft,
   Download,
   Filter,
   MoreHorizontal,
@@ -9,13 +10,16 @@ import {
   Search,
   SlidersHorizontal,
   Sparkles,
+  Trash2,
   X,
 } from "lucide-react";
 import { products } from "../data";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   companyApi,
   demoProducts,
   getApiItems,
+  materialApi,
   productApi,
   type CompanyRequest,
   type ProductRequest,
@@ -151,12 +155,19 @@ export function Operations({ type }: { type: keyof typeof content }) {
     weight: undefined,
   });
   const [productError, setProductError] = useState("");
+  const [searchParams] = useSearchParams();
+  const productFilterId = searchParams.get("productId") ?? undefined;
   const queryClient = useQueryClient();
   const data = content[type];
   const productQuery = useQuery({
     queryKey: ["products"],
     queryFn: async () => (await productApi.list()).data,
     enabled: type === "products",
+  });
+  const materialQuery = useQuery({
+    queryKey: ["materials", productFilterId],
+    queryFn: async () => getApiItems((await materialApi.list(productFilterId)).data),
+    enabled: type === "materials",
   });
   const companyQuery = useQuery({
     queryKey: ["companies"],
@@ -186,6 +197,11 @@ export function Operations({ type }: { type: keyof typeof content }) {
         "The product could not be saved. Check the company ID and values, then try again.",
       ),
   });
+  const productDeleteMutation = useMutation({
+    mutationFn: (id: string) => productApi.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["products"] }),
+    onError: () => setProductError("The product could not be deleted. Check your permissions and try again."),
+  });
   const demoProductMutation = useMutation({
     mutationFn: async () => {
       const companiesResponse = await companyApi.list();
@@ -209,9 +225,13 @@ export function Operations({ type }: { type: keyof typeof content }) {
       ),
   });
   const productsFromApi = getApiItems(productQuery.data);
+  const filteredProducts = useMemo(
+    () => productsFromApi.filter((product) => Object.values(product).join(" ").toLowerCase().includes(search.toLowerCase())),
+    [productsFromApi, search],
+  );
   const apiRows =
     type === "products"
-      ? productsFromApi.map((product: Record<string, unknown>) => [
+      ? filteredProducts.map((product: Record<string, unknown>) => [
           String(
             product.name ??
               product.productName ??
@@ -245,12 +265,26 @@ export function Operations({ type }: { type: keyof typeof content }) {
           "Ready",
         ])
       : [];
+  const materialRows =
+    type === "materials"
+      ? getApiItems(materialQuery.data).map((material: Record<string, unknown>) => [
+          String(material.materialName ?? material.name ?? "Unnamed material"),
+          String(material.materialType ?? material.type ?? "—"),
+          String(material.weightKg ?? material.weight ?? "—"),
+          String(material.recycledContentPercent ?? "—"),
+          String(material.countryOfOrigin ?? material.origin ?? "—"),
+        ])
+      : [];
   const rows: string[][] =
     type === "companies"
       ? companyRows
-      : apiRows.length > 0
-        ? apiRows
-        : data.rows.map((row) => row.map(String));
+      : type === "materials"
+        ? materialRows.length > 0
+          ? materialRows
+          : data.rows.map((row) => row.map(String))
+        : apiRows.length > 0
+          ? apiRows
+          : data.rows.map((row) => row.map(String));
   const filtered = useMemo(
     () =>
       rows.filter((row) =>
@@ -331,13 +365,28 @@ export function Operations({ type }: { type: keyof typeof content }) {
         <div>
           <span className="eyebrow">{data.eyebrow}</span>
           <h1>{data.title}</h1>
-          <p>{data.description}</p>
+          <p>
+            {data.description}
+            {type === "materials" && productFilterId && (
+              <span style={{ display: "block", marginTop: "0.5rem", opacity: 0.8 }}>
+                Product filter: {productFilterId}
+              </span>
+            )}
+          </p>
         </div>
+        {type === "materials" && productFilterId && (
+          <div className="heading-actions">
+            <Link className="button secondary" to={`/products/${productFilterId}`}>
+              <ArrowLeft size={16} />Back to product
+            </Link>
+          </div>
+        )}
         <div className="heading-actions">
           <button className="button secondary">
             <Download size={16} />
             Export
           </button>
+          {type === "products" && <Link className="button secondary" to="/products/new"><Plus size={16} />Create DPP</Link>}
           {type === "products" && productsFromApi.length === 0 && !productQuery.isFetching && (
             <button className="button secondary" onClick={() => demoProductMutation.mutate()} disabled={demoProductMutation.isPending}>
               {demoProductMutation.isPending ? "Loading demo data..." : "Load demo data"}
@@ -358,6 +407,7 @@ export function Operations({ type }: { type: keyof typeof content }) {
         </div>
       </div>
       <section className="panel table-panel">
+        {type === "products" && productError && <p className="form-error catalog-error">{productError}</p>}
         <div className="table-toolbar">
           <div className="search-box">
             <Search size={17} />
@@ -424,6 +474,8 @@ export function Operations({ type }: { type: keyof typeof content }) {
                       >
                         <Pencil size={16} />
                       </button>
+                    ) : type === "products" ? (
+                      <div className="row-actions"><button className="icon-button" title="Delete product" disabled={productDeleteMutation.isPending} onClick={() => { const product = filteredProducts[rowIndex]; const id = String(product?.id ?? product?.productId ?? ""); if (id && window.confirm(`Delete ${String(product.productName ?? product.name ?? product.productNumber ?? "this product")}?`)) productDeleteMutation.mutate(id); }}><Trash2 size={16} /></button></div>
                     ) : (
                       <button className="icon-button">
                         <MoreHorizontal size={18} />
