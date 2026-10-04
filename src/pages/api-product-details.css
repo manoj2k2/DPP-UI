@@ -1,0 +1,45 @@
+.api-product-page { display: grid; gap: 18px; }
+.api-product-hero { margin-bottom: 0; }
+.product-detail-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(300px, .7fr); gap: 18px; }
+.product-identity-panel, .product-passport-panel, .product-readiness-panel { min-width: 0; }
+.product-field-grid, .passport-meta, .readiness-values { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px 20px; margin: 22px 0 0; }
+.product-field-grid > div, .passport-meta > div, .readiness-values > div { min-width: 0; }
+.product-field-grid dt, .passport-meta dt, .readiness-values dt { margin-bottom: 5px; color: var(--muted); font-size: 10px; }
+.product-field-grid dd, .passport-meta dd, .readiness-values dd { margin: 0; color: var(--ink); font-size: 12px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.product-field-grid .product-description { grid-column: 1 / -1; }
+.product-query-state { display: flex; align-items: center; gap: 8px; margin: 19px 0 0; color: var(--muted); font-size: 12px; }
+.product-notice, .product-error, .product-inline-error { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: var(--panel); font-size: 12px; }
+.product-notice { border-color: #e6d6a9; background: #fff9e9; }
+.product-error, .product-inline-error { border-color: #edc7bf; background: #fff5f2; }
+.product-error span, .product-inline-error span { color: var(--muted); overflow-wrap: anywhere; }
+.product-passport-status { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+.product-passport-icon, .product-workspace-icon { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; border-radius: 8px; color: var(--teal); background: #d8efe2; }
+.product-passport-status > div:nth-child(2) { display: grid; flex: 1; gap: 4px; min-width: 0; }
+.product-passport-status strong { color: var(--ink); font-size: 12px; }
+.product-passport-status span { color: var(--muted); font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+.passport-meta { padding-top: 16px; border-top: 1px solid var(--line); }
+.product-inline-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 20px; color: var(--teal); font-size: 11px; font-weight: 600; text-decoration: none; }
+.product-inline-link:hover { text-decoration: underline; }
+.product-section-description { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.readiness-values { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.readiness-values > div { padding: 13px; border: 1px solid var(--line); border-radius: 7px; background: var(--canvas); }
+.product-workspaces-section { min-width: 0; }
+.product-workspaces-section .dpp-section-heading { margin-bottom: 13px; }
+.product-workspaces-section .dpp-section-heading h2 { margin: 5px 0 0; color: var(--ink); font: 700 18px 'Manrope'; }
+.product-workspaces { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.product-workspace-card { display: flex; align-items: center; gap: 11px; min-width: 0; padding: 15px; color: inherit; text-decoration: none; transition: border-color .15s, transform .15s; }
+.product-workspace-card:hover { border-color: #9acabb; transform: translateY(-1px); }
+.product-workspace-copy { display: grid; flex: 1; gap: 4px; min-width: 0; }
+.product-workspace-copy strong { color: var(--ink); font-size: 11px; }
+.product-workspace-copy small { color: var(--muted); font-size: 10px; line-height: 1.4; }
+.product-workspace-arrow { flex: 0 0 auto; color: var(--muted); transform: rotate(135deg); }
+@media (max-width: 950px) {
+  .product-detail-grid { grid-template-columns: 1fr; }
+  .product-workspaces { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .api-product-hero { align-items: flex-start; flex-direction: column; }
+  .product-workspaces { grid-template-columns: 1fr; }
+  .readiness-values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .product-field-grid, .passport-meta { gap: 14px; }
+}

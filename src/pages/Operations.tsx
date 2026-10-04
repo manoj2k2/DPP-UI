@@ -21,11 +21,17 @@ import {
   getApiItems,
   materialApi,
   productApi,
+  supplierApi,
+  type CreateSupplierCertificateDto,
+  type CreateSupplierContactDto,
+  type CreateSupplierMaterialDto,
+  type CreateSupplierSiteDto,
   type CompanyRequest,
   type ProductRequest,
 } from "../api/client";
 import { StatusBadge } from "../components/StatusBadge";
 import { SectionHeader } from "../components/SectionHeader";
+import "./suppliers.css";
 
 const content = {
   companies: {
@@ -130,8 +136,21 @@ const content = {
   },
 };
 
+type SupplierMutationRequest =
+  | { resource: "site"; payload: CreateSupplierSiteDto }
+  | { resource: "contact"; payload: CreateSupplierContactDto }
+  | { resource: "material"; payload: CreateSupplierMaterialDto }
+  | { resource: "certificate"; payload: CreateSupplierCertificateDto };
+
+const isUuid = (value: string) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+
 export function Operations({ type }: { type: keyof typeof content }) {
   const [search, setSearch] = useState("");
+  const [supplierDialogOpen, setSupplierDialogOpen] = useState(false);
+  const [supplierDialogName, setSupplierDialogName] = useState("");
+  const [supplierId, setSupplierId] = useState("");
+  const [supplierSuccess, setSupplierSuccess] = useState("");
   const [companyModalOpen, setCompanyModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<Record<
     string,
@@ -159,6 +178,8 @@ export function Operations({ type }: { type: keyof typeof content }) {
   const productFilterId = searchParams.get("productId") ?? undefined;
   const queryClient = useQueryClient();
   const data = content[type];
+  const normalizedSupplierId = supplierId.trim();
+  const validSupplierId = isUuid(normalizedSupplierId);
   const productQuery = useQuery({
     queryKey: ["products"],
     queryFn: async () => (await productApi.list()).data,
@@ -173,6 +194,36 @@ export function Operations({ type }: { type: keyof typeof content }) {
     queryKey: ["companies"],
     queryFn: async () => (await companyApi.list()).data,
     enabled: type === "companies",
+  });
+  const supplierSitesQuery = useQuery({
+    queryKey: ["supplier-sites", normalizedSupplierId],
+    queryFn: async () => getApiItems((await supplierApi.listSites(normalizedSupplierId)).data),
+    enabled: type === "suppliers" && supplierDialogOpen && validSupplierId,
+  });
+  const supplierMutation = useMutation({
+    mutationFn: async (request: SupplierMutationRequest): Promise<void> => {
+      switch (request.resource) {
+        case "site":
+          await supplierApi.createSite(request.payload.supplierId, request.payload);
+          break;
+        case "contact":
+          await supplierApi.createContact(request.payload.supplierId, request.payload);
+          break;
+        case "material":
+          await supplierApi.createMaterial(request.payload.supplierId, request.payload);
+          break;
+        case "certificate":
+          await supplierApi.createCertificate(request.payload.supplierId, request.payload);
+          break;
+      }
+    },
+    onSuccess: (_response, request) => {
+      setSupplierSuccess(`${request.resource[0].toUpperCase()}${request.resource.slice(1)} saved.`);
+      if (request.resource === "site") {
+        queryClient.invalidateQueries({ queryKey: ["supplier-sites", request.payload.supplierId] });
+      }
+    },
+    onError: () => setSupplierSuccess(""),
   });
   const companyMutation = useMutation({
     mutationFn: ({ id, payload }: { id?: string; payload: CompanyRequest }) =>
@@ -359,6 +410,83 @@ export function Operations({ type }: { type: keyof typeof content }) {
       productName: productForm.productName.trim(),
     });
   }
+  function openSupplierDialog(name: string) {
+    setSupplierDialogName(name);
+    setSupplierId("");
+    setSupplierSuccess("");
+    supplierMutation.reset();
+    setSupplierDialogOpen(true);
+  }
+  function closeSupplierDialog() {
+    setSupplierDialogOpen(false);
+    setSupplierSuccess("");
+    supplierMutation.reset();
+  }
+  function formField(form: HTMLFormElement, name: string) {
+    const value = new FormData(form).get(name);
+    return typeof value === "string" ? value.trim() : "";
+  }
+  function submitSupplierSite(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    supplierMutation.mutate({
+      resource: "site",
+      payload: {
+        supplierId: normalizedSupplierId,
+        siteName: formField(form, "siteName"),
+        address: {
+          line1: formField(form, "line1"),
+          line2: formField(form, "line2"),
+          city: formField(form, "city"),
+          region: formField(form, "region"),
+          postalCode: formField(form, "postalCode"),
+          country: formField(form, "country"),
+        },
+      },
+    });
+  }
+  function submitSupplierContact(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    supplierMutation.mutate({
+      resource: "contact",
+      payload: {
+        supplierId: normalizedSupplierId,
+        name: formField(form, "name"),
+        role: formField(form, "role"),
+        email: formField(form, "email"),
+        phone: formField(form, "phone"),
+      },
+    });
+  }
+  function submitSupplierMaterial(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    supplierMutation.mutate({
+      resource: "material",
+      payload: {
+        supplierId: normalizedSupplierId,
+        materialMasterId: formField(form, "materialMasterId"),
+        supplierMaterialCode: formField(form, "supplierMaterialCode"),
+      },
+    });
+  }
+  function submitSupplierCertificate(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const issuedDate = formField(form, "issuedDate");
+    const expiryDate = formField(form, "expiryDate");
+    supplierMutation.mutate({
+      resource: "certificate",
+      payload: {
+        supplierId: normalizedSupplierId,
+        certificateName: formField(form, "certificateName"),
+        blobUrl: formField(form, "blobUrl"),
+        issuedDate: issuedDate ? new Date(issuedDate).toISOString() : undefined,
+        expiryDate: expiryDate ? new Date(expiryDate).toISOString() : undefined,
+      },
+    });
+  }
   return (
     <div className="page">
       <div className="page-heading">
@@ -392,7 +520,7 @@ export function Operations({ type }: { type: keyof typeof content }) {
               {demoProductMutation.isPending ? "Loading demo data..." : "Load demo data"}
             </button>
           )}
-          <button
+          {type !== "suppliers" && <button
             className="button primary"
             onClick={() => type === "companies" ? openCompanyModal() : type === "products" ? openProductModal() : undefined}
           >
@@ -404,6 +532,7 @@ export function Operations({ type }: { type: keyof typeof content }) {
                 ? "company"
                 : type.slice(0, -1)}
           </button>
+          }
         </div>
       </div>
       <section className="panel table-panel">
@@ -476,6 +605,15 @@ export function Operations({ type }: { type: keyof typeof content }) {
                       </button>
                     ) : type === "products" ? (
                       <div className="row-actions"><button className="icon-button" title="Delete product" disabled={productDeleteMutation.isPending} onClick={() => { const product = filteredProducts[rowIndex]; const id = String(product?.id ?? product?.productId ?? ""); if (id && window.confirm(`Delete ${String(product.productName ?? product.name ?? product.productNumber ?? "this product")}?`)) productDeleteMutation.mutate(id); }}><Trash2 size={16} /></button></div>
+                    ) : type === "suppliers" ? (
+                      <button
+                        className="icon-button"
+                        title="Manage supplier data"
+                        aria-label={`Manage data for ${row[0]}`}
+                        onClick={() => openSupplierDialog(row[0])}
+                      >
+                        <MoreHorizontal size={18} />
+                      </button>
                     ) : (
                       <button className="icon-button">
                         <MoreHorizontal size={18} />
@@ -652,6 +790,132 @@ export function Operations({ type }: { type: keyof typeof content }) {
               {productError && <p className="form-error">{productError}</p>}
               <div className="modal-actions"><button type="button" className="button secondary" onClick={closeProductModal}>Cancel</button><button type="submit" className="button primary" disabled={productMutation.isPending}>{productMutation.isPending ? "Saving..." : "Add product"}</button></div>
             </form>
+          </div>
+        </div>
+      )}
+      {supplierDialogOpen && (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onMouseDown={(event) => event.target === event.currentTarget && closeSupplierDialog()}
+        >
+          <div className="modal supplier-modal" role="dialog" aria-modal="true" aria-labelledby="supplier-modal-title">
+            <div className="modal-header">
+              <div>
+                <span className="eyebrow">SUPPLY NETWORK</span>
+                <h2 id="supplier-modal-title">{supplierDialogName}</h2>
+              </div>
+              <button className="icon-button" title="Close" onClick={closeSupplierDialog}><X size={18} /></button>
+            </div>
+            <div className="supplier-modal-body">
+              <div className="company-form supplier-id-form">
+                <label>
+                  Supplier ID
+                  <input
+                    required
+                    value={supplierId}
+                    onChange={(event) => {
+                      setSupplierId(event.target.value);
+                      setSupplierSuccess("");
+                      supplierMutation.reset();
+                    }}
+                    placeholder="00000000-0000-0000-0000-000000000000"
+                    aria-describedby="supplier-id-help"
+                  />
+                </label>
+                <span id="supplier-id-help" className="supplier-help">
+                  Enter the supplier UUID to load sites and submit related records.
+                </span>
+              </div>
+              {supplierId && !validSupplierId && (
+                <p className="form-error supplier-feedback" role="alert">Enter a valid supplier UUID.</p>
+              )}
+              {validSupplierId && (
+                <section className="supplier-sites" aria-live="polite">
+                  <h3>Sites</h3>
+                  {supplierSitesQuery.isFetching && <p>Loading supplier sites...</p>}
+                  {supplierSitesQuery.isError && <p className="form-error" role="alert">Supplier sites could not be loaded. Check the supplier ID and try again.</p>}
+                  {!supplierSitesQuery.isFetching && !supplierSitesQuery.isError && getApiItems(supplierSitesQuery.data).length === 0 && (
+                    <p>No sites are registered for this supplier.</p>
+                  )}
+                  <ul className="supplier-site-list">
+                    {getApiItems(supplierSitesQuery.data).map((site, index) => (
+                      <li key={String(site.id ?? index)}>
+                        <strong>{String(site.siteName ?? "Supplier site")}</strong>
+                        {Boolean(site.city) && <span>{String(site.city)}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              {supplierMutation.isError && (
+                <p className="form-error supplier-feedback" role="alert">
+                  Supplier data could not be saved. Check the values and confirm the supplier ID.
+                </p>
+              )}
+              {supplierSuccess && <p className="supplier-success" role="status">{supplierSuccess}</p>}
+              <details className="supplier-resource" open>
+                <summary>Add site</summary>
+                <form className="company-form" onSubmit={submitSupplierSite}>
+                  <label>Site name<input name="siteName" /></label>
+                  <div className="form-grid">
+                    <label>Address line 1<input name="line1" /></label>
+                    <label>Address line 2<input name="line2" /></label>
+                  </div>
+                  <div className="form-grid">
+                    <label>City<input name="city" /></label>
+                    <label>Region<input name="region" /></label>
+                  </div>
+                  <div className="form-grid">
+                    <label>Postal code<input name="postalCode" /></label>
+                    <label>Country<input name="country" /></label>
+                  </div>
+                  <button className="button primary" type="submit" disabled={!validSupplierId || supplierMutation.isPending}>
+                    {supplierMutation.isPending ? "Saving..." : "Save site"}
+                  </button>
+                </form>
+              </details>
+              <details className="supplier-resource">
+                <summary>Add contact</summary>
+                <form className="company-form" onSubmit={submitSupplierContact}>
+                  <div className="form-grid">
+                    <label>Name<input name="name" /></label>
+                    <label>Role<input name="role" /></label>
+                  </div>
+                  <div className="form-grid">
+                    <label>Email<input name="email" type="email" /></label>
+                    <label>Phone<input name="phone" type="tel" /></label>
+                  </div>
+                  <button className="button primary" type="submit" disabled={!validSupplierId || supplierMutation.isPending}>
+                    {supplierMutation.isPending ? "Saving..." : "Save contact"}
+                  </button>
+                </form>
+              </details>
+              <details className="supplier-resource">
+                <summary>Add material</summary>
+                <form className="company-form" onSubmit={submitSupplierMaterial}>
+                  <label>Material master ID<input name="materialMasterId" required pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" /></label>
+                  <label>Supplier material code<input name="supplierMaterialCode" /></label>
+                  <button className="button primary" type="submit" disabled={!validSupplierId || supplierMutation.isPending}>
+                    {supplierMutation.isPending ? "Saving..." : "Save material"}
+                  </button>
+                </form>
+              </details>
+              <details className="supplier-resource">
+                <summary>Add certificate</summary>
+                <form className="company-form" onSubmit={submitSupplierCertificate}>
+                  <label>Certificate name<input name="certificateName" /></label>
+                  <label>Blob URL<input name="blobUrl" type="url" /></label>
+                  <div className="form-grid">
+                    <label>Issued date<input name="issuedDate" type="date" /></label>
+                    <label>Expiry date<input name="expiryDate" type="date" /></label>
+                  </div>
+                  <button className="button primary" type="submit" disabled={!validSupplierId || supplierMutation.isPending}>
+                    {supplierMutation.isPending ? "Saving..." : "Save certificate"}
+                  </button>
+                </form>
+              </details>
+            </div>
           </div>
         </div>
       )}

@@ -19,6 +19,11 @@ export type CompanyRequest = { companyName: string; vatNumber?: string; country?
 export type ProductRequest = { companyId: string; productNumber: string; productName: string; productCategory?: string; description?: string; weight?: number }
 export type MaterialRequest = { productId: string; materialName: string; materialType?: string; weightKg?: number; recycledContentPercent?: number; countryOfOrigin?: string; parentComponentId?: string }
 export type PcfRequest = { productId: string; valueKgCo2e: number; method?: string; scope?: string; calculationDate: string; verificationStatus?: string; verificationEvidenceId?: string; source?: string }
+export type CreateAddressDto = { line1?: string; line2?: string; city?: string; region?: string; postalCode?: string; country?: string }
+export type CreateSupplierSiteDto = { supplierId: string; siteName?: string; address?: CreateAddressDto }
+export type CreateSupplierContactDto = { supplierId: string; name?: string; role?: string; email?: string; phone?: string }
+export type CreateSupplierMaterialDto = { supplierId: string; materialMasterId: string; supplierMaterialCode?: string }
+export type CreateSupplierCertificateDto = { supplierId: string; certificateName?: string; blobUrl?: string; issuedDate?: string; expiryDate?: string }
 export const demoProducts: ProductRequest[] = [
   { companyId: '00000000-0000-0000-0000-000000000001', productNumber: 'AM-BCP-001', productName: 'Battery Cooling Plate', productCategory: 'Thermal management', description: 'Aluminium cooling plate for EV battery systems.', weight: 12.6 },
   { companyId: '00000000-0000-0000-0000-000000000001', productNumber: 'AM-EDH-002', productName: 'E-Drive Housing', productCategory: 'Powertrain', description: 'Lightweight housing for electric drive units.', weight: 18.4 },
@@ -37,6 +42,7 @@ export const companyApi = {
 export const productApi = {
   list: () => api.get<ApiList<Record<string, unknown>>>('/products'),
   get: (id: string) => api.get<Record<string, unknown>>(`/products/${id}`),
+  readiness: (productId: string) => api.get<unknown>(`/products/${productId}/readiness`),
   create: (payload: ProductRequest) => api.post('/products', payload),
   update: (id: string, payload: ProductRequest) => api.put(`/products/${id}`, payload),
   delete: (id: string) => api.delete(`/products/${id}`),
@@ -44,6 +50,13 @@ export const productApi = {
 export const materialApi = {
   list: (productId?: string) => api.get<ApiList<Record<string, unknown>>>('/materials', { params: productId ? { productId } : undefined }),
   create: (payload: MaterialRequest) => api.post('/materials', payload),
+}
+export const supplierApi = {
+  listSites: (supplierId: string) => api.get<ApiList<Record<string, unknown>>>(`/suppliers/${supplierId}/sites`),
+  createSite: (supplierId: string, payload: CreateSupplierSiteDto) => api.post(`/suppliers/${supplierId}/sites`, payload),
+  createContact: (supplierId: string, payload: CreateSupplierContactDto) => api.post(`/suppliers/${supplierId}/contacts`, payload),
+  createMaterial: (supplierId: string, payload: CreateSupplierMaterialDto) => api.post(`/suppliers/${supplierId}/materials`, payload),
+  createCertificate: (supplierId: string, payload: CreateSupplierCertificateDto) => api.post(`/suppliers/${supplierId}/certificates`, payload),
 }
 export const documentApi = {
   list: (productId?: string) => api.get<ApiList<Record<string, unknown>>>('/documents', { params: productId ? { productId } : undefined }),
