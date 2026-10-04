@@ -28,4 +28,5 @@ export const navItems = [
   { label: 'Reports', icon: 'BarChart3', path: '/reports' },
   { label: 'Catena-X', icon: 'Network', path: '/integrations/catena-x' },
   { label: 'EU Registry', icon: 'Landmark', path: '/registry' },
+  { label: 'Help', icon: 'CircleHelp', path: '/help' },
 ]
