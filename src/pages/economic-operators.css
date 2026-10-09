@@ -1,0 +1,16 @@
+.operator-panel { padding: 0; overflow: hidden; }
+.operator-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.operator-toolbar h2 { margin: 5px 0 0; color: var(--ink); font: 700 16px 'Manrope'; }
+.operator-search { width: min(280px, 45%); display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); }
+.operator-search input { width: 100%; min-width: 0; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 11px; }
+.operator-query-state { margin: 18px 20px; color: var(--muted); font-size: 11px; }
+.operator-empty { min-height: 230px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 25px; color: var(--muted); text-align: center; }
+.operator-empty svg { color: #91aaa2; }.operator-empty strong { color: var(--ink); font-size: 12px; }.operator-empty span { max-width: 330px; font-size: 10px; line-height: 1.5; }.operator-empty .button { margin-top: 5px; }
+.operator-footer { display: flex; align-items: center; min-height: 43px; padding: 0 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+.economic-operators-page .table-icon { flex: 0 0 28px; }
+.economic-operators-page .company-form input[type="number"] { width: 100%; }
+@media (max-width: 620px) {
+  .operator-toolbar { align-items: stretch; flex-direction: column; padding: 15px; }
+  .operator-search { width: 100%; }
+  .operator-footer { padding: 0 15px; }
+}

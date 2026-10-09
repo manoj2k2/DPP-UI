@@ -8,6 +8,18 @@ services:
       - "8080:80"
     depends_on:
       - api
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    user: "65532:65532"
+    working_dir: /home/nonroot
+    command: tunnel --no-autoupdate run
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?Set CLOUDFLARE_TUNNEL_TOKEN in your environment}
+    restart: "no"
+    depends_on:
+      - web
   api:
     image: dpp:latest 
     expose:
@@ -25,6 +37,6 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: always
-  
+
 volumes:
-  pgdata: 
+  pgdata:

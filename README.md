@@ -15,7 +15,9 @@ The app opens at `http://localhost:5173`. The dashboard ships with representativ
 
 Copy `.env.example` to `.env` and set `VITE_API_URL` to the API base URL. The Axios client adds a stored `dpp_token` as a bearer token and exposes dashboard, product, and passport service methods in `src/api/client.ts`.
 
-The current screen data is intentionally local and mockable. Replace the data source in the route-level pages with TanStack Query calls as API endpoints become available. The expected endpoints include `/api/products`, `/api/passports/generate`, and `/api/dashboard`.
+The dashboard currently uses explicitly marked sample workspace data; the supplied Swagger contract does not define a dashboard aggregation endpoint. Product records and product readiness are available through `/api/products` and `/api/products/{productId}/readiness`. Passport data and generation use `/api/passports/{productId}` and `/api/passports/generate`. Other route-level pages may continue to use representative local data where the API contract does not yet provide a matching read endpoint.
+
+Tenant administration uses `/api/tenants` and tenant-scoped settings and user endpoints. Select an active tenant from the workspace selector before managing its members and roles. Economic operators are managed separately through `/api/companies`; they are not tenant records.
 
 ## Production build
 

@@ -17,7 +17,8 @@ export const activities: Activity[] = [
 
 export const navItems = [
   { label: 'Overview', icon: 'LayoutDashboard', path: '/' },
-  { label: 'Companies', icon: 'Building2', path: '/companies' },
+  { label: 'Tenants', icon: 'Building2', path: '/tenants' },
+  { label: 'Economic operators', icon: 'Factory', path: '/companies' },
   { label: 'Products', icon: 'Box', path: '/products' },
   { label: 'Materials', icon: 'Layers3', path: '/materials' },
   { label: 'Suppliers', icon: 'Truck', path: '/suppliers' },
