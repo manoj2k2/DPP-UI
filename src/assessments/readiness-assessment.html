@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catena-X Readiness Self-Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1em;
+            opacity: 0.95;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #ff6b35;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .assessment-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #0052cc;
+            font-size: 1.5em;
+            margin-bottom: 5px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0052cc;
+        }
+
+        .section p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #0052cc;
+        }
+
+        .question label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #0052cc;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background: #f0f7ff;
+            border-color: #0052cc;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .option input[type="radio"]:checked + label,
+        .option input[type="checkbox"]:checked + label {
+            color: #0052cc;
+            font-weight: 600;
+        }
+
+        .option label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+            font-weight: normal;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 14px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+            color: white;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.4);
+        }
+
+        .clear-btn {
+            background: #ddd;
+            color: #333;
+            max-width: 200px;
+        }
+
+        .clear-btn:hover {
+            background: #ccc;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .results-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .results-header h2 {
+            color: #0052cc;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #0052cc;
+            margin: 20px 0;
+        }
+
+        .readiness-status {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .status-ready {
+            color: #4caf50;
+        }
+
+        .status-partial {
+            color: #ff9800;
+        }
+
+        .status-not-ready {
+            color: #f44336;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #0052cc;
+            text-align: center;
+        }
+
+        .score-card h4 {
+            color: #0052cc;
+            margin-bottom: 10px;
+        }
+
+        .score-card .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #0052cc;
+        }
+
+        .score-card .score-max {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .funding-status {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .funding-status h3 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .results-section-content {
+            margin-bottom: 30px;
+        }
+
+        .results-section-content h3 {
+            color: #0052cc;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #0052cc;
+            padding-bottom: 10px;
+        }
+
+        .use-case-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .use-case-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .use-case-item strong {
+            color: #0052cc;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .gaps-list,
+        .steps-list {
+            list-style: none;
+        }
+
+        .gaps-list li,
+        .steps-list li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            border-bottom: 1px solid #eee;
+            color: #666;
+        }
+
+        .gaps-list li:last-child,
+        .steps-list li:last-child {
+            border-bottom: none;
+        }
+
+        .gaps-list li:before {
+            content: "⚠";
+            position: absolute;
+            left: 0;
+            color: #ff9800;
+            font-weight: bold;
+        }
+
+        .steps-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #0052cc;
+            font-weight: bold;
+        }
+
+        .roadmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .roadmap-phase {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .roadmap-phase h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .roadmap-phase p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .cta-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+
+        .cta-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.4);
+        }
+
+        .cta-button.secondary {
+            background: #ff9800;
+        }
+
+        .cta-button.secondary:hover {
+            background: #f57c00;
+        }
+
+        nav {
+            margin-bottom: 20px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            background: white;
+            color: #0052cc;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            background-color: #002d7a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .score-breakdown {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .submit-btn,
+            .clear-btn {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html" class="nav-link">← Back to Main</a>
+        </nav>
+
+        <header>
+            <h1>🎯 Catena-X Readiness Assessment</h1>
+            <p>Self-Screening Evaluation (10 minutes)</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText" style="margin-top: 10px; font-size: 0.9em;">0 of 35 questions answered</p>
+        </header>
+
+        <form class="assessment-form" id="assessmentForm">
+            <!-- Section 1: Company Profile -->
+            <div class="section">
+                <h2>📊 Section 1: Company Profile</h2>
+                <p>Tell us about your organization</p>
+
+                <div class="question">
+                    <label><span class="question-number">1</span>Company Name *</label>
+                    <input type="text" name="company_name" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">2</span>Country *</label>
+                    <select name="country" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">Select Country</option>
+                        <option value="Austria">Austria</option>
+                        <option value="Belgium">Belgium</option>
+                        <option value="Germany">Germany</option>
+                        <option value="France">France</option>
+                        <option value="Italy">Italy</option>
+                        <option value="Spain">Spain</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">3</span>Industry *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="industry" value="automotive" required><label>Automotive</label></div>
+                        <div class="option"><input type="radio" name="industry" value="manufacturing"><label>Manufacturing</label></div>
+                        <div class="option"><input type="radio" name="industry" value="logistics"><label>Logistics</label></div>
+                        <div class="option"><input type="radio" name="industry" value="engineering"><label>Engineering</label></div>
+                        <div class="option"><input type="radio" name="industry" value="sustainability"><label>Sustainability Services</label></div>
+                        <div class="option"><input type="radio" name="industry" value="other"><label>Other</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">4</span>Company Size *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="company_size" value="micro" required><label>Micro (&lt;10 employees)</label></div>
+                        <div class="option"><input type="radio" name="company_size" value="small"><label>Small (10-49)</label></div>
+                        <div class="option"><input type="radio" name="company_size" value="medium"><label>Medium (50-249)</label></div>
+                        <div class="option"><input type="radio" name="company_size" value="large"><label>Large (250+)</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">5</span>Are you currently supplying an OEM or Tier-1 supplier? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="oem_supplier" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="oem_supplier" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">6</span>Have you been requested by a customer to join Catena-X? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="customer_request" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="customer_request" value="no"><label>No</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Business Readiness -->
+            <div class="section">
+                <h2>🎯 Section 2: Business Readiness</h2>
+                <p>Assess your business preparation</p>
+
+                <div class="question">
+                    <label><span class="question-number">7</span>Why are you interested in Catena-X? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="interest_reason" value="customer_requirement" required><label>Customer requirement</label></div>
+                        <div class="option"><input type="radio" name="interest_reason" value="pcf"><label>Product Carbon Footprint (PCF)</label></div>
+                        <div class="option"><input type="radio" name="interest_reason" value="traceability"><label>Traceability</label></div>
+                        <div class="option"><input type="radio" name="interest_reason" value="dpp"><label>Digital Product Passport (DPP)</label></div>
+                        <div class="option"><input type="radio" name="interest_reason" value="sustainability"><label>Sustainability reporting</label></div>
+                        <div class="option"><input type="radio" name="interest_reason" value="exploring"><label>Exploring opportunities</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">8</span>Do you have a clear use case? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="clear_usecase" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="clear_usecase" value="partially"><label>Partially</label></div>
+                        <div class="option"><input type="radio" name="clear_usecase" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">9</span>Is there a management sponsor for this initiative? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="exec_sponsor" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="exec_sponsor" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">10</span>Has a project owner been assigned? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="project_owner" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="project_owner" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">11</span>Are you willing to share data with trusted business partners? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="data_sharing_willing" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="data_sharing_willing" value="no"><label>No</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: ERP & Data Readiness -->
+            <div class="section">
+                <h2>📊 Section 3: ERP & Data Readiness</h2>
+                <p>Evaluate your data systems</p>
+
+                <div class="question">
+                    <label><span class="question-number">12</span>Which ERP system do you use? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="erp_system" value="sap" required><label>SAP</label></div>
+                        <div class="option"><input type="radio" name="erp_system" value="dynamics"><label>Microsoft Dynamics</label></div>
+                        <div class="option"><input type="radio" name="erp_system" value="oracle"><label>Oracle</label></div>
+                        <div class="option"><input type="radio" name="erp_system" value="odoo"><label>Odoo</label></div>
+                        <div class="option"><input type="radio" name="erp_system" value="other"><label>Other</label></div>
+                        <div class="option"><input type="radio" name="erp_system" value="none"><label>None</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">13</span>Do you maintain structured product data? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="product_data" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="product_data" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">14</span>Do you maintain supplier and customer data? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="supplier_data" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="supplier_data" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">15</span>Is required data available digitally? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="data_digital" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="data_digital" value="partially"><label>Partially</label></div>
+                        <div class="option"><input type="radio" name="data_digital" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">16</span>Can your systems export data? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="data_export" value="api" required><label>API</label></div>
+                        <div class="option"><input type="radio" name="data_export" value="csv"><label>CSV</label></div>
+                        <div class="option"><input type="radio" name="data_export" value="excel"><label>Excel</label></div>
+                        <div class="option"><input type="radio" name="data_export" value="no"><label>No Export Possible</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Technical Readiness -->
+            <div class="section">
+                <h2>⚙️ Section 4: Technical Readiness</h2>
+                <p>Assess your technical capabilities</p>
+
+                <div class="question">
+                    <label><span class="question-number">17</span>Do you have an internal IT team? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="it_team" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="it_team" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">18</span>Can you deploy applications internally? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="deploy_internal" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="deploy_internal" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">19</span>Do you currently expose APIs? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="expose_api" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="expose_api" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">20</span>Do you have database systems? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="database" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="database" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">21</span>How do you currently exchange data externally? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="data_exchange" value="api" required><label>APIs</label></div>
+                        <div class="option"><input type="radio" name="data_exchange" value="email"><label>Email</label></div>
+                        <div class="option"><input type="radio" name="data_exchange" value="excel"><label>Excel</label></div>
+                        <div class="option"><input type="radio" name="data_exchange" value="edi"><label>EDI</label></div>
+                        <div class="option"><input type="radio" name="data_exchange" value="na"><label>Not Applicable</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Cloud Readiness -->
+            <div class="section">
+                <h2>☁️ Section 5: Cloud Readiness</h2>
+                <p>Evaluate cloud capabilities</p>
+
+                <div class="question">
+                    <label><span class="question-number">22</span>Where will Catena-X components be hosted? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="hosting" value="azure" required><label>Azure</label></div>
+                        <div class="option"><input type="radio" name="hosting" value="aws"><label>AWS</label></div>
+                        <div class="option"><input type="radio" name="hosting" value="gcp"><label>Google Cloud</label></div>
+                        <div class="option"><input type="radio" name="hosting" value="private"><label>Private Cloud</label></div>
+                        <div class="option"><input type="radio" name="hosting" value="onprem"><label>On-Premises</label></div>
+                        <div class="option"><input type="radio" name="hosting" value="notsure"><label>Not Sure</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">23</span>Is Docker available? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="docker" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="docker" value="no"><label>No</label></div>
+                        <div class="option"><input type="radio" name="docker" value="notsure"><label>Not Sure</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">24</span>Is Kubernetes available? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="kubernetes" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="kubernetes" value="no"><label>No</label></div>
+                        <div class="option"><input type="radio" name="kubernetes" value="notsure"><label>Not Sure</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">25</span>Do you have cloud administration support? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="cloud_admin" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="cloud_admin" value="no"><label>No</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: Security Readiness -->
+            <div class="section">
+                <h2>🔒 Section 6: Security Readiness</h2>
+                <p>Evaluate security capabilities</p>
+
+                <div class="question">
+                    <label><span class="question-number">26</span>Do you use Single Sign-On (SSO)? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="sso" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="sso" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">27</span>Is Multi-Factor Authentication enabled? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="mfa" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="mfa" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">28</span>Is an Identity Provider available? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="identity_provider" value="azuread" required><label>Azure AD</label></div>
+                        <div class="option"><input type="radio" name="identity_provider" value="keycloak"><label>Keycloak</label></div>
+                        <div class="option"><input type="radio" name="identity_provider" value="okta"><label>Okta</label></div>
+                        <div class="option"><input type="radio" name="identity_provider" value="other"><label>Other</label></div>
+                        <div class="option"><input type="radio" name="identity_provider" value="none"><label>None</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">29</span>Do you have security/compliance policies? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="security_policies" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="security_policies" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">30</span>Are you allowed to share data externally? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="external_data_sharing" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="external_data_sharing" value="no"><label>No</label></div>
+                        <div class="option"><input type="radio" name="external_data_sharing" value="review"><label>Requires Legal Review</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 7: Funding Qualification -->
+            <div class="section">
+                <h2>💰 Section 7: Funding Qualification</h2>
+                <p>Assess your participation readiness</p>
+
+                <div class="question">
+                    <label><span class="question-number">31</span>Would you participate in onboarding and readiness assessments? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="participate_assessment" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="participate_assessment" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">32</span>Would you provide project information required for funding applications? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="provide_info" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="provide_info" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">33</span>Would you participate in pilot activities and testing? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="pilot_testing" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="pilot_testing" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">34</span>Would you permit collection of project outcome metrics? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="metrics_collection" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="metrics_collection" value="no"><label>No</label></div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label><span class="question-number">35</span>Are you interested in a funded onboarding program? *</label>
+                    <div class="options">
+                        <div class="option"><input type="radio" name="funded_program" value="yes" required><label>Yes</label></div>
+                        <div class="option"><input type="radio" name="funded_program" value="no"><label>No</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="submit-btn">📊 Generate My Readiness Report</button>
+                <button type="reset" class="clear-btn">Clear Answers</button>
+            </div>
+        </form>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-container">
+                <div class="results-header">
+                    <h2>📈 Your Catena-X Readiness Report</h2>
+                    <p id="companyNameResult"></p>
+                    <div class="score-display" id="totalScore">0/100</div>
+                    <div class="readiness-status" id="readinessStatus"></div>
+                </div>
+
+                <div class="score-breakdown" id="scoreBreakdown"></div>
+
+                <div class="funding-status" id="fundingStatus"></div>
+
+                <div class="results-section-content">
+                    <h3>💡 Recommended Use Cases</h3>
+                    <div class="use-case-list" id="useCaseList"></div>
+                </div>
+
+                <div class="results-section-content">
+                    <h3>⚠️ Key Gaps to Address</h3>
+                    <ul class="gaps-list" id="gapsList"></ul>
+                </div>
+
+                <div class="results-section-content">
+                    <h3>🗓️ Suggested Roadmap</h3>
+                    <div class="roadmap" id="roadmapList"></div>
+                </div>
+
+                <div class="cta-group">
+                    <a href="index.html#contact" class="cta-button">📝 Get Full Assessment Report</a>
+                    <a href="validate-idas.html" class="cta-button secondary">🎯 Check IDAS Eligibility</a>
+                    <button class="cta-button" onclick="window.scrollTo(0,0); document.getElementById('assessmentForm').scrollIntoView();" style="background: #ddd; color: #333;">↺ Take Assessment Again</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Catena-X SME Accelerator Copilot. Readiness Assessment Tool.</p>
+        </footer>
+    </div>
+
+    <script>
+        const assessmentForm = document.getElementById('assessmentForm');
+        const resultsSection = document.getElementById('resultsSection');
+
+        // Track form changes for progress
+        assessmentForm.addEventListener('change', updateProgress);
+        assessmentForm.addEventListener('input', updateProgress);
+
+        function updateProgress() {
+            const inputs = assessmentForm.querySelectorAll('input[required]');
+            const answered = Array.from(inputs).filter(input => {
+                if (input.type === 'radio') {
+                    return assessmentForm.querySelector(`input[name="${input.name}"]:checked`);
+                } else if (input.type === 'text') {
+                    return input.value.trim() !== '';
+                }
+                return false;
+            }).length;
+
+            const total = inputs.length;
+            const percentage = (answered / total) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `${answered} of ${total} questions answered`;
+        }
+
+        assessmentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateReport();
+        });
+
+        function generateReport() {
+            const formData = new FormData(assessmentForm);
+            const data = Object.fromEntries(formData);
+
+            const scores = calculateScores(data);
+            displayResults(data, scores);
+        }
+
+        function calculateScores(data) {
+            let businessScore = 0;
+            let technicalScore = 0;
+            let dataScore = 0;
+            let securityScore = 0;
+            let fundingScore = 0;
+
+            // Business Readiness (Section 2: 5 questions, max 25)
+            if (data.clear_usecase === 'yes') businessScore += 5;
+            else if (data.clear_usecase === 'partially') businessScore += 3;
+
+            if (data.exec_sponsor === 'yes') businessScore += 5;
+            if (data.project_owner === 'yes') businessScore += 5;
+            if (data.data_sharing_willing === 'yes') businessScore += 5;
+            if (data.interest_reason === 'customer_requirement') businessScore += 5;
+
+            // Technical Readiness (Section 4: 5 questions, max 25)
+            if (data.it_team === 'yes') technicalScore += 5;
+            if (data.deploy_internal === 'yes') technicalScore += 5;
+            if (data.expose_api === 'yes') technicalScore += 5;
+            if (data.database === 'yes') technicalScore += 5;
+            if (data.data_exchange === 'api') technicalScore += 5;
+
+            // Data Readiness (Section 3: 5 questions, max 25)
+            if (data.erp_system !== 'none') dataScore += 5;
+            if (data.product_data === 'yes') dataScore += 5;
+            if (data.supplier_data === 'yes') dataScore += 5;
+            if (data.data_digital === 'yes') dataScore += 5;
+            else if (data.data_digital === 'partially') dataScore += 3;
+            if (data.data_export !== 'no') dataScore += 5;
+
+            // Security Readiness (Section 6: 5 questions, max 25)
+            if (data.sso === 'yes') securityScore += 5;
+            if (data.mfa === 'yes') securityScore += 5;
+            if (data.identity_provider !== 'none') securityScore += 5;
+            if (data.security_policies === 'yes') securityScore += 5;
+            if (data.external_data_sharing === 'yes') securityScore += 5;
+
+            // Funding Qualification (Section 7: 5 questions, max 25)
+            if (data.participate_assessment === 'yes') fundingScore += 5;
+            if (data.provide_info === 'yes') fundingScore += 5;
+            if (data.pilot_testing === 'yes') fundingScore += 5;
+            if (data.metrics_collection === 'yes') fundingScore += 5;
+            if (data.funded_program === 'yes') fundingScore += 5;
+
+            const totalScore = businessScore + technicalScore + dataScore + securityScore;
+
+            return {
+                business: businessScore,
+                technical: technicalScore,
+                data: dataScore,
+                security: securityScore,
+                funding: fundingScore,
+                total: totalScore
+            };
+        }
+
+        function displayResults(data, scores) {
+            // Company name and score
+            document.getElementById('companyNameResult').textContent = `Assessment for: ${data.company_name}`;
+            document.getElementById('totalScore').textContent = `${scores.total}/100`;
+
+            // Readiness status
+            let status = '';
+            let statusClass = '';
+            if (scores.total >= 80) {
+                status = '✅ Ready for Catena-X Onboarding';
+                statusClass = 'status-ready';
+            } else if (scores.total >= 60) {
+                status = '✅ Ready with Minor Gaps';
+                statusClass = 'status-partial';
+            } else if (scores.total >= 40) {
+                status = '⚠️ Preparation Recommended';
+                statusClass = 'status-partial';
+            } else {
+                status = '❌ Not Ready';
+                statusClass = 'status-not-ready';
+            }
+            const readinessEl = document.getElementById('readinessStatus');
+            readinessEl.textContent = status;
+            readinessEl.className = statusClass;
+
+            // Score breakdown
+            const breakdownHTML = `
+                <div class="score-card">
+                    <h4>Business Readiness</h4>
+                    <div class="score-value">${scores.business}</div>
+                    <div class="score-max">/ 25 points</div>
+                </div>
+                <div class="score-card">
+                    <h4>Technical Readiness</h4>
+                    <div class="score-value">${scores.technical}</div>
+                    <div class="score-max">/ 25 points</div>
+                </div>
+                <div class="score-card">
+                    <h4>Data Readiness</h4>
+                    <div class="score-value">${scores.data}</div>
+                    <div class="score-max">/ 25 points</div>
+                </div>
+                <div class="score-card">
+                    <h4>Security Readiness</h4>
+                    <div class="score-value">${scores.security}</div>
+                    <div class="score-max">/ 25 points</div>
+                </div>
+            `;
+            document.getElementById('scoreBreakdown').innerHTML = breakdownHTML;
+
+            // Funding status
+            let fundingStatus = '';
+            if (scores.funding >= 20) {
+                fundingStatus = '✅ Likely Eligible for IDAS Funding';
+            } else if (scores.funding >= 15) {
+                fundingStatus = '⚠️ Funding Eligibility Needs Review';
+            } else {
+                fundingStatus = '❌ May Not Qualify for IDAS Funding';
+            }
+
+            const fundingHTML = `
+                <h3>💰 Funding Qualification</h3>
+                <p><strong>${fundingStatus}</strong></p>
+                <p style="margin-top: 10px; font-size: 0.95em;">Funding Score: ${scores.funding}/25</p>
+                <p>Review your IDAS eligibility and contact us for a detailed funding assessment.</p>
+            `;
+            document.getElementById('fundingStatus').innerHTML = fundingHTML;
+
+            // Recommended use cases
+            const useCases = determineUseCases(data);
+            const useCasesHTML = useCases.map(uc => `<div class="use-case-item"><strong>${uc.icon} ${uc.name}</strong><p>${uc.desc}</p></div>`).join('');
+            document.getElementById('useCaseList').innerHTML = useCasesHTML;
+
+            // Key gaps
+            const gaps = identifyGaps(data, scores);
+            const gapsHTML = gaps.map(gap => `<li>${gap}</li>`).join('');
+            document.getElementById('gapsList').innerHTML = gapsHTML;
+
+            // Roadmap
+            const roadmap = generateRoadmap(data, scores);
+            const roadmapHTML = roadmap.map(phase => `
+                <div class="roadmap-phase">
+                    <h4>${phase.month}</h4>
+                    <p>${phase.description}</p>
+                </div>
+            `).join('');
+            document.getElementById('roadmapList').innerHTML = roadmapHTML;
+
+            // Show results and scroll
+            resultsSection.classList.add('show');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function determineUseCases(data) {
+            const cases = [];
+
+            if (data.interest_reason === 'pcf' || data.interest_reason === 'customer_requirement') {
+                cases.push({ icon: '🌍', name: 'Product Carbon Footprint (PCF)', desc: 'Track and report emissions' });
+            }
+            if (data.interest_reason === 'traceability' || data.oem_supplier === 'yes') {
+                cases.push({ icon: '🔗', name: 'Traceability', desc: 'Supply chain visibility' });
+            }
+            if (data.interest_reason === 'dpp') {
+                cases.push({ icon: '📄', name: 'Digital Product Passport', desc: 'Product information management' });
+            }
+            if (data.supplier_data === 'yes') {
+                cases.push({ icon: '📊', name: 'Demand & Capacity Management', desc: 'Supply planning' });
+            }
+            if (data.erp_system !== 'none') {
+                cases.push({ icon: '🏢', name: 'Supplier Network', desc: 'Partner collaboration' });
+            }
+
+            return cases.length > 0 ? cases : [{ icon: '🎯', name: 'Assessment Needed', desc: 'Determine best use case in consultation' }];
+        }
+
+        function identifyGaps(data, scores) {
+            const gaps = [];
+
+            if (data.exec_sponsor !== 'yes') gaps.push('No executive sponsor assigned');
+            if (data.project_owner !== 'yes') gaps.push('No dedicated project owner');
+            if (data.clear_usecase !== 'yes') gaps.push('Use case definition needs clarity');
+            if (data.data_sharing_willing !== 'yes') gaps.push('Data sharing willingness unclear');
+
+            if (data.it_team !== 'yes') gaps.push('Internal IT team resources needed');
+            if (data.deploy_internal !== 'yes') gaps.push('Internal deployment capability required');
+            if (data.expose_api !== 'yes') gaps.push('API integration needed for Catena-X');
+            if (data.database !== 'yes') gaps.push('Database systems infrastructure needed');
+
+            if (data.erp_system === 'none') gaps.push('ERP system implementation required');
+            if (data.product_data !== 'yes') gaps.push('Structured product data needs to be created');
+            if (data.data_digital !== 'yes') gaps.push('Data digitization is required');
+            if (data.data_export === 'no') gaps.push('Data export capabilities must be enabled');
+
+            if (data.sso !== 'yes') gaps.push('Single Sign-On (SSO) implementation needed');
+            if (data.mfa !== 'yes') gaps.push('Multi-Factor Authentication should be enabled');
+            if (data.identity_provider === 'none') gaps.push('Identity Provider setup required');
+            if (data.security_policies !== 'yes') gaps.push('Security and compliance policies needed');
+
+            if (data.hosting === 'notsure') gaps.push('Cloud hosting strategy needs to be decided');
+            if (data.docker !== 'yes') gaps.push('Docker containerization should be evaluated');
+            if (data.cloud_admin !== 'yes') gaps.push('Cloud administration expertise needed');
+
+            return gaps.length > 0 ? gaps : ['No significant gaps identified'];
+        }
+
+        function generateRoadmap(data, scores) {
+            return [
+                {
+                    month: '📅 Month 1',
+                    description: 'Readiness assessment, assign sponsor/owner, define use case'
+                },
+                {
+                    month: '📅 Month 2',
+                    description: 'EDC deployment, setup cloud infrastructure, security hardening'
+                },
+                {
+                    month: '📅 Month 3',
+                    description: 'Use case activation, data mapping, integration testing'
+                },
+                {
+                    month: '📅 Month 4',
+                    description: 'Pilot testing, go-live preparation, stakeholder training'
+                }
+            ];
+        }
+    </script>
+</body>
+</html>

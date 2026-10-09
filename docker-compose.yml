@@ -1,11 +1,42 @@
 services:
   web:
-    build: .
+    container_name: dpp-web
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:80"
     depends_on:
       - api
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    user: "65532:65532"
+    working_dir: /home/nonroot
+    command: tunnel --no-autoupdate run
+    environment:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?Set CLOUDFLARE_TUNNEL_TOKEN in your environment}
+    restart: "no"
+    depends_on:
+      - web
   api:
-    image: ghcr.io/axiom-mobility/dpp-api:latest
+    image: dpp:latest 
     expose:
-      - "8080"
+      - "80"
+    container_name: dpp-api
+    depends_on:
+      - db
+  db:
+    image: postgres:15.3-alpine
+    container_name: dpp-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dpp_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  pgdata:

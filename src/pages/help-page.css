@@ -1,0 +1,13 @@
+.help-page { max-width: 980px; }
+.help-hint { padding: 26px; }
+.help-hint-heading { display: flex; align-items: center; gap: 12px; }
+.help-hint-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9px; color: var(--teal); background: #d8efe2; }
+.help-hint-heading h2 { margin: 4px 0 0; color: var(--ink); font: 700 19px 'Manrope'; }
+.help-hint-intro { margin: 22px 0 16px; color: var(--muted); font-size: 13px; }
+.onboarding-flow { max-width: 650px; padding: 0; margin: 0; list-style: none; }
+.onboarding-step { position: relative; display: flex; align-items: center; gap: 13px; min-height: 56px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--canvas); font-size: 13px; font-weight: 600; }
+.onboarding-step:not(:last-child) { margin-bottom: 18px; }
+.onboarding-step:not(:last-child)::after { content: ''; position: absolute; left: 27px; top: 100%; width: 1px; height: 19px; background: var(--teal); }
+.onboarding-step > svg { flex: 0 0 auto; color: var(--teal); }
+.onboarding-step-number { width: 27px; color: var(--muted); font-size: 10px; font-weight: 700; }
+@media (max-width: 760px) { .help-hint { padding: 18px; }.onboarding-step { gap: 10px; font-size: 12px; } }

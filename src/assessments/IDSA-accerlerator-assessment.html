@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDAS Accelerator Program - Eligibility Validator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        nav {
+            margin-bottom: 30px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            background: white;
+            color: #0052cc;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .validation-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .validation-form h2 {
+            color: #0052cc;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #0052cc;
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #0052cc;
+            box-shadow: 0 0 5px rgba(0, 82, 204, 0.3);
+        }
+
+        .form-hint {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .criteria-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .criteria-panel h2 {
+            color: #0052cc;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #0052cc;
+            padding-bottom: 15px;
+        }
+
+        .criteria-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .criteria-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .criteria-text h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .criteria-text p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .validate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .validate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.4);
+        }
+
+        .validate-btn:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .result-icon {
+            font-size: 3em;
+            margin-right: 20px;
+        }
+
+        .result-icon.eligible {
+            color: #4caf50;
+        }
+
+        .result-icon.not-eligible {
+            color: #f44336;
+        }
+
+        .result-icon.partial {
+            color: #ff9800;
+        }
+
+        .result-text h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .result-text p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .criteria-check {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            border-left: 4px solid #ddd;
+        }
+
+        .criteria-check.pass {
+            border-left-color: #4caf50;
+            background: #f1f8f4;
+        }
+
+        .criteria-check.fail {
+            border-left-color: #f44336;
+            background: #fef1f0;
+        }
+
+        .criteria-check.warning {
+            border-left-color: #ff9800;
+            background: #fff9f5;
+        }
+
+        .check-icon {
+            font-size: 1.5em;
+            margin-right: 12px;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+
+        .check-content {
+            flex: 1;
+        }
+
+        .check-content label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .check-content p {
+            color: #666;
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%);
+            border-left: 4px solid #0052cc;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .summary-box h4 {
+            color: #0052cc;
+            margin-bottom: 10px;
+        }
+
+        .next-steps {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 25px;
+        }
+
+        .next-steps h4 {
+            color: #0052cc;
+            margin-bottom: 15px;
+        }
+
+        .steps-list {
+            list-style: none;
+        }
+
+        .steps-list li {
+            padding: 8px 0;
+            color: #666;
+            border-bottom: 1px solid #eee;
+        }
+
+        .steps-list li:last-child {
+            border-bottom: none;
+        }
+
+        .steps-list li:before {
+            content: "→ ";
+            color: #0052cc;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #ff6b35;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+
+        .cta-button:hover {
+            background-color: #e55a2b;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 0.95em;
+        }
+
+        .info-box strong {
+            color: #1976d2;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .result-icon {
+                font-size: 2em;
+            }
+        }
+
+        footer {
+            background-color: #002d7a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html" class="nav-link">← Back to Main</a>
+        </nav>
+
+        <header>
+            <h1>🎯 IDAS Accelerator Program</h1>
+            <p>Eligibility Validator</p>
+            <span class="badge">Check Your SME Qualification</span>
+        </header>
+
+        <div class="main-content">
+            <div class="validation-form">
+                <h2>📋 Validation Form</h2>
+                
+                <form id="validationForm">
+                    <div class="form-group">
+                        <label for="company_name">Company Name *</label>
+                        <input type="text" id="company_name" name="company_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country">Country/Region *</label>
+                        <select id="country" name="country" required>
+                            <option value="">Select Country</option>
+                            <option value="Austria">Austria</option>
+                            <option value="Belgium">Belgium</option>
+                            <option value="Bulgaria">Bulgaria</option>
+                            <option value="Croatia">Croatia</option>
+                            <option value="Cyprus">Cyprus</option>
+                            <option value="Czech Republic">Czech Republic</option>
+                            <option value="Denmark">Denmark</option>
+                            <option value="Estonia">Estonia</option>
+                            <option value="Finland">Finland</option>
+                            <option value="France">France</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Greece">Greece</option>
+                            <option value="Hungary">Hungary</option>
+                            <option value="Ireland">Ireland</option>
+                            <option value="Italy">Italy</option>
+                            <option value="Latvia">Latvia</option>
+                            <option value="Lithuania">Lithuania</option>
+                            <option value="Luxembourg">Luxembourg</option>
+                            <option value="Malta">Malta</option>
+                            <option value="Netherlands">Netherlands</option>
+                            <option value="Poland">Poland</option>
+                            <option value="Portugal">Portugal</option>
+                            <option value="Romania">Romania</option>
+                            <option value="Slovakia">Slovakia</option>
+                            <option value="Slovenia">Slovenia</option>
+                            <option value="Spain">Spain</option>
+                            <option value="Sweden">Sweden</option>
+                            <option value="Other">Other (Non-EU)</option>
+                        </select>
+                        <div class="form-hint">Must be EU-based for IDAS eligibility</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employees">Number of Employees *</label>
+                        <input type="number" id="employees" name="employees" min="1" required>
+                        <div class="form-hint">Must be between 50-250 for SME status</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="revenue">Annual Revenue (€ millions)</label>
+                        <input type="number" id="revenue" name="revenue" min="0" step="0.1">
+                        <div class="form-hint">Optional - must be below €50M for SME</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="industry">Industry *</label>
+                        <select id="industry" name="industry" required>
+                            <option value="">Select Industry</option>
+                            <option value="automotive">Automotive</option>
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="logistics">Logistics & Supply Chain</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="chemicals">Chemicals & Materials</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="form-hint">IDAS focuses on automotive, manufacturing, and logistics</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="catena_interest">Catena-X Adoption Interest *</label>
+                        <select id="catena_interest" name="catena_interest" required>
+                            <option value="">Select Interest Level</option>
+                            <option value="high">High - Ready to commit</option>
+                            <option value="medium">Medium - Exploring options</option>
+                            <option value="low">Low - Just learning</option>
+                        </select>
+                        <div class="form-hint">IDAS requires commitment to data-sharing ecosystem</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget">Transformation Budget Needed (€)</label>
+                        <input type="number" id="budget" name="budget" min="0">
+                        <div class="form-hint">IDAS programs: €50k-€500k</div>
+                    </div>
+
+                    <button type="submit" class="validate-btn">🔍 Validate Eligibility</button>
+                </form>
+            </div>
+
+            <div class="criteria-panel">
+                <h2>✅ IDAS Criteria</h2>
+                
+                <div class="criteria-item">
+                    <div class="criteria-icon">👥</div>
+                    <div class="criteria-text">
+                        <h4>Company Size (SME)</h4>
+                        <p>50-250 employees</p>
+                    </div>
+                </div>
+
+                <div class="criteria-item">
+                    <div class="criteria-icon">🇪🇺</div>
+                    <div class="criteria-text">
+                        <h4>EU-Based</h4>
+                        <p>Registered in an EU member state</p>
+                    </div>
+                </div>
+
+                <div class="criteria-item">
+                    <div class="criteria-icon">💰</div>
+                    <div class="criteria-text">
+                        <h4>Revenue Limit</h4>
+                        <p>< €50M annual revenue</p>
+                    </div>
+                </div>
+
+                <div class="criteria-item">
+                    <div class="criteria-icon">🏭</div>
+                    <div class="criteria-text">
+                        <h4>Target Industries</h4>
+                        <p>Automotive, Manufacturing, Logistics (preferred)</p>
+                    </div>
+                </div>
+
+                <div class="criteria-item">
+                    <div class="criteria-icon">🔗</div>
+                    <div class="criteria-text">
+                        <h4>Data Sharing Commitment</h4>
+                        <p>Commitment to Catena-X ecosystem</p>
+                    </div>
+                </div>
+
+                <div class="criteria-item">
+                    <div class="criteria-icon">💡</div>
+                    <div class="criteria-text">
+                        <h4>Budget Range</h4>
+                        <p>€50k-€500k transformation budget</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Note:</strong> All criteria must be met for full eligibility. Partial matches may qualify for alternative programs.
+                </div>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="result-header" id="resultHeader">
+                <div class="result-icon">✓</div>
+                <div class="result-text">
+                    <h3 id="resultTitle">Validation Result</h3>
+                    <p id="resultMessage">Your company meets the IDAS eligibility criteria</p>
+                </div>
+            </div>
+
+            <div id="criteriaChecks"></div>
+
+            <div id="summary" class="summary-box"></div>
+
+            <div class="next-steps">
+                <h4>🚀 Next Steps</h4>
+                <ul class="steps-list">
+                    <li>Fill out the complete application form</li>
+                    <li>Prepare required documentation</li>
+                    <li>Submit to IDAS program office</li>
+                    <li>Receive feedback within 4-8 weeks</li>
+                    <li>Begin onboarding if approved</li>
+                </ul>
+            </div>
+
+            <div>
+                <a href="index.html#contact" class="cta-button">📝 Start Application</a>
+                <button class="cta-button" onclick="location.href='#validationForm'" style="background-color: #0052cc;">↺ Validate Again</button>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Catena-X SME Accelerator Copilot. IDAS Program Validator.</p>
+        </footer>
+    </div>
+
+    <script>
+        const EU_COUNTRIES = [
+            'Austria', 'Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic',
+            'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary',
+            'Ireland', 'Italy', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta',
+            'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovakia', 'Slovenia',
+            'Spain', 'Sweden'
+        ];
+
+        const PREFERRED_INDUSTRIES = ['automotive', 'manufacturing', 'logistics'];
+
+        document.getElementById('validationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            validateEligibility();
+        });
+
+        function validateEligibility() {
+            const company = {
+                name: document.getElementById('company_name').value,
+                country: document.getElementById('country').value,
+                employees: parseInt(document.getElementById('employees').value),
+                revenue: parseFloat(document.getElementById('revenue').value) || 0,
+                industry: document.getElementById('industry').value,
+                catena_interest: document.getElementById('catena_interest').value,
+                budget: parseFloat(document.getElementById('budget').value) || 0
+            };
+
+            const checks = performValidation(company);
+            displayResults(company, checks);
+        }
+
+        function performValidation(company) {
+            const checks = [];
+
+            // Check 1: EU-Based
+            const isEuBased = EU_COUNTRIES.includes(company.country);
+            checks.push({
+                name: '🇪🇺 EU-Based Company',
+                criterion: 'Must be registered in EU member state',
+                value: company.country,
+                pass: isEuBased,
+                type: 'critical'
+            });
+
+            // Check 2: Employee Count
+            const validEmployees = company.employees >= 50 && company.employees <= 250;
+            checks.push({
+                name: '👥 SME Size Validation',
+                criterion: 'Between 50-250 employees',
+                value: company.employees + ' employees',
+                pass: validEmployees,
+                type: 'critical'
+            });
+
+            // Check 3: Annual Revenue
+            let revenuePass = true;
+            let revenueType = 'critical';
+            if (company.revenue === 0) {
+                revenuePass = true;
+                revenueType = 'info';
+            } else {
+                revenuePass = company.revenue < 50;
+            }
+            checks.push({
+                name: '💰 Revenue Limit',
+                criterion: 'Less than €50M annual revenue',
+                value: company.revenue > 0 ? '€' + company.revenue + 'M' : 'Not provided',
+                pass: revenuePass,
+                type: revenueType
+            });
+
+            // Check 4: Industry Match
+            const isPreferredIndustry = PREFERRED_INDUSTRIES.includes(company.industry);
+            const isSupportedIndustry = company.industry !== 'other';
+            checks.push({
+                name: '🏭 Target Industry',
+                criterion: 'Automotive, Manufacturing, or Logistics preferred',
+                value: company.industry,
+                pass: isPreferredIndustry,
+                warning: isSupportedIndustry && !isPreferredIndustry,
+                type: isPreferredIndustry ? 'success' : (isSupportedIndustry ? 'warning' : 'fail')
+            });
+
+            // Check 5: Catena-X Interest
+            const hasCatenaInterest = company.catena_interest !== 'low';
+            checks.push({
+                name: '🔗 Catena-X Commitment',
+                criterion: 'Committed to data-sharing ecosystem',
+                value: company.catena_interest,
+                pass: hasCatenaInterest,
+                warning: company.catena_interest === 'low',
+                type: hasCatenaInterest ? 'success' : 'warning'
+            });
+
+            // Check 6: Budget Range
+            const validBudget = (company.budget === 0) || (company.budget >= 50000 && company.budget <= 500000);
+            checks.push({
+                name: '💡 Transformation Budget',
+                criterion: '€50k-€500k (or not specified)',
+                value: company.budget > 0 ? '€' + (company.budget / 1000).toFixed(0) + 'k' : 'Not specified',
+                pass: validBudget,
+                type: company.budget === 0 ? 'info' : (validBudget ? 'success' : 'warning')
+            });
+
+            return checks;
+        }
+
+        function displayResults(company, checks) {
+            const resultsSection = document.getElementById('resultsSection');
+            const resultHeader = document.getElementById('resultHeader');
+            
+            // Calculate eligibility
+            const criticalChecks = checks.filter(c => c.type === 'critical');
+            const allCriticalPass = criticalChecks.every(c => c.pass);
+            const allChecksPass = checks.every(c => c.pass);
+
+            // Determine eligibility status
+            let status, title, message, icon;
+            if (allCriticalPass) {
+                if (allChecksPass) {
+                    status = 'eligible';
+                    title = '✅ FULLY ELIGIBLE';
+                    message = 'Your company meets all IDAS accelerator program criteria!';
+                    icon = '✅';
+                } else {
+                    status = 'partial';
+                    title = '⚠️ ELIGIBLE WITH NOTES';
+                    message = 'Your company meets critical criteria but has some gaps. You may qualify for alternative programs.';
+                    icon = '⚠️';
+                }
+            } else {
+                status = 'not-eligible';
+                title = '❌ NOT CURRENTLY ELIGIBLE';
+                message = 'Your company does not meet the critical IDAS requirements. Please review the gaps below.';
+                icon = '❌';
+            }
+
+            // Update result header
+            resultHeader.innerHTML = `
+                <div class="result-icon ${status}">${icon}</div>
+                <div class="result-text">
+                    <h3>${title}</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+
+            // Build criteria checks HTML
+            let checksHTML = '';
+            checks.forEach(check => {
+                const checkClass = check.pass ? 'pass' : (check.warning ? 'warning' : 'fail');
+                const checkIcon = check.pass ? '✓' : (check.warning ? '⚠' : '✗');
+                checksHTML += `
+                    <div class="criteria-check ${checkClass}">
+                        <div class="check-icon">${checkIcon}</div>
+                        <div class="check-content">
+                            <label>${check.name}</label>
+                            <p><strong>Requirement:</strong> ${check.criterion}</p>
+                            <p><strong>Your Status:</strong> ${check.value}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('criteriaChecks').innerHTML = checksHTML;
+
+            // Build summary
+            let summaryHTML = `<h4>📊 Eligibility Summary</h4>`;
+            summaryHTML += `<p><strong>Company:</strong> ${company.name}</p>`;
+            summaryHTML += `<p><strong>Country:</strong> ${company.country}</p>`;
+            summaryHTML += `<p><strong>Employees:</strong> ${company.employees}</p>`;
+            
+            const passedCount = checks.filter(c => c.pass).length;
+            summaryHTML += `<p><strong>Criteria Met:</strong> ${passedCount}/${checks.length}</p>`;
+
+            if (allCriticalPass) {
+                summaryHTML += `<p style="color: #4caf50; font-weight: bold; margin-top: 10px;">✓ You are eligible to apply for IDAS funding!</p>`;
+                if (!allChecksPass) {
+                    const failedChecks = checks.filter(c => !c.pass).map(c => c.name).join(', ');
+                    summaryHTML += `<p style="color: #ff9800; margin-top: 10px;">⚠️ Please address: ${failedChecks}</p>`;
+                }
+            } else {
+                const criticalFailed = criticalChecks.filter(c => !c.pass).map(c => c.name).join(', ');
+                summaryHTML += `<p style="color: #f44336; font-weight: bold; margin-top: 10px;">✗ Critical gaps: ${criticalFailed}</p>`;
+            }
+
+            document.getElementById('summary').innerHTML = summaryHTML;
+            resultsSection.classList.add('show');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

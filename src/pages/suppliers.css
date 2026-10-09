@@ -1,0 +1,100 @@
+.supplier-modal {
+  width: min(720px, 100%);
+  max-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+}
+
+.supplier-modal-body {
+  overflow-y: auto;
+}
+
+.supplier-id-form {
+  gap: 7px;
+  padding-bottom: 14px;
+}
+
+.supplier-help {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.supplier-feedback,
+.supplier-success {
+  margin: 0 24px 12px;
+  font-size: 11px;
+}
+
+.supplier-success {
+  color: var(--teal);
+}
+
+.supplier-sites {
+  padding: 0 24px 16px;
+}
+
+.supplier-sites h3 {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font: 700 13px 'Manrope';
+}
+
+.supplier-sites p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.supplier-site-list {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.supplier-site-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.supplier-site-list strong {
+  color: var(--ink);
+}
+
+.supplier-resource {
+  border-top: 1px solid var(--line);
+}
+
+.supplier-resource summary {
+  padding: 13px 24px;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.supplier-resource .company-form {
+  padding-top: 3px;
+}
+
+.supplier-resource .button {
+  justify-self: end;
+}
+
+@media (max-width: 560px) {
+  .supplier-modal {
+    max-height: calc(100vh - 20px);
+  }
+
+  .supplier-resource .company-form {
+    padding-right: 17px;
+    padding-left: 17px;
+  }
+}

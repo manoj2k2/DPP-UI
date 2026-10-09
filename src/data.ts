@@ -17,7 +17,8 @@ export const activities: Activity[] = [
 
 export const navItems = [
   { label: 'Overview', icon: 'LayoutDashboard', path: '/' },
-  { label: 'Companies', icon: 'Building2', path: '/companies' },
+  { label: 'Tenants', icon: 'Building2', path: '/tenants' },
+  { label: 'Economic operators', icon: 'Factory', path: '/companies' },
   { label: 'Products', icon: 'Box', path: '/products' },
   { label: 'Materials', icon: 'Layers3', path: '/materials' },
   { label: 'Suppliers', icon: 'Truck', path: '/suppliers' },
@@ -26,4 +27,7 @@ export const navItems = [
   { label: 'Passports', icon: 'QrCode', path: '/passports' },
   { label: 'Assessment', icon: 'ClipboardCheck', path: '/assessment' },
   { label: 'Reports', icon: 'BarChart3', path: '/reports' },
+  { label: 'Catena-X', icon: 'Network', path: '/integrations/catena-x' },
+  { label: 'EU Registry', icon: 'Landmark', path: '/registry' },
+  { label: 'Help', icon: 'CircleHelp', path: '/help' },
 ]

@@ -2,18 +2,20 @@ import { create } from 'zustand'
 
 type AppState = {
   dark: boolean
-  company: string
+  activeTenantId: string
+  activeTenantName: string
   notifications: number
   toggleTheme: () => void
-  setCompany: (company: string) => void
+  setActiveTenant: (id: string, name: string) => void
   clearNotifications: () => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
   dark: false,
-  company: 'Axiom Mobility',
+  activeTenantId: '',
+  activeTenantName: '',
   notifications: 4,
   toggleTheme: () => set((state) => ({ dark: !state.dark })),
-  setCompany: (company) => set({ company }),
+  setActiveTenant: (activeTenantId, activeTenantName) => set({ activeTenantId, activeTenantName }),
   clearNotifications: () => set({ notifications: 0 }),
 }))

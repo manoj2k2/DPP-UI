@@ -1,0 +1,57 @@
+.tenant-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+.tenant-summary-card { min-width: 0; display: flex; align-items: center; gap: 12px; padding: 16px 18px; }
+.tenant-summary-icon { width: 35px; height: 35px; flex: 0 0 35px; display: grid; place-items: center; border-radius: 8px; color: var(--teal); background: #d8efe2; }
+.tenant-summary-icon.blue { color: var(--blue); background: #e0ebf5; }.tenant-summary-icon.amber { color: var(--amber); background: #faecd5; }
+.tenant-summary-card div { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.tenant-summary-card div > span { color: var(--muted); font-size: 10px; }
+.tenant-summary-card strong { overflow: hidden; color: var(--ink); font: 700 15px 'Manrope'; text-overflow: ellipsis; white-space: nowrap; }
+.tenant-management-grid { display: grid; grid-template-columns: minmax(260px, .85fr) minmax(0, 1.4fr); gap: 17px; align-items: start; }
+.tenant-list-panel, .tenant-settings-panel { min-width: 0; padding: 21px; }
+.tenant-section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.tenant-section-heading h2 { margin: 5px 0; color: var(--ink); font: 700 17px 'Manrope'; }
+.tenant-section-heading p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.tenant-count { min-width: 25px; padding: 4px 7px; border-radius: 99px; background: var(--canvas); color: var(--muted); font-size: 10px; text-align: center; }
+.tenant-heading-icon { margin-top: 3px; color: var(--teal); }
+.tenant-list { display: grid; gap: 7px; margin-top: 17px; }
+.tenant-row { width: 100%; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: var(--panel); text-align: left; }
+.tenant-row:not(:disabled) { cursor: pointer; }.tenant-row:hover, .tenant-row.selected { border-color: #8fc4b5; background: color-mix(in srgb, var(--teal) 5%, var(--panel)); }
+.tenant-row > svg { flex: 0 0 auto; margin-left: auto; color: var(--teal); }
+.tenant-avatar { width: 31px; height: 31px; flex: 0 0 31px; display: grid; place-items: center; border-radius: 7px; color: var(--teal-dark); background: #d8efe2; font: 700 13px 'Manrope'; }
+.tenant-row-copy { min-width: 0; display: flex; flex: 1; flex-direction: column; gap: 3px; }
+.tenant-row-copy strong, .tenant-row-copy small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tenant-row-copy strong { font-size: 11px; }.tenant-row-copy small { color: var(--muted); font-size: 9px; }
+.tenant-empty { min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 22px 10px; color: var(--muted); text-align: center; }
+.tenant-empty svg { color: #91aaa2; }.tenant-empty strong { color: var(--ink); font-size: 12px; }.tenant-empty span { max-width: 240px; font-size: 10px; line-height: 1.5; }
+.tenant-empty.compact { min-height: 170px; }.tenant-empty.compact span { max-width: 260px; }
+.tenant-query-state, .tenant-empty-settings { margin: 16px 0; color: var(--muted); font-size: 11px; }
+.tenant-profile { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 18px 0; padding: 13px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.tenant-profile > div { min-width: 0; }.tenant-profile > div:last-child { grid-column: 1 / -1; }
+.tenant-profile dt { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 9px; }
+.tenant-profile dt svg { color: var(--teal); }.tenant-profile dd { overflow-wrap: anywhere; margin: 5px 0 0; color: var(--ink); font-size: 10px; }
+.tenant-settings-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tenant-settings-heading h3 { margin: 0; color: var(--ink); font: 700 12px 'Manrope'; }.tenant-settings-heading span { color: var(--muted); font-size: 9px; }
+.tenant-setting-list { margin-top: 9px; border-top: 1px solid var(--line); }
+.tenant-setting-row { display: grid; grid-template-columns: minmax(120px, .7fr) minmax(0, 1fr); gap: 12px; padding: 9px 2px; border-bottom: 1px solid var(--line); }
+.tenant-setting-row strong { color: var(--ink); font-size: 10px; overflow-wrap: anywhere; }.tenant-setting-row span { color: var(--muted); font-size: 10px; overflow-wrap: anywhere; }
+.tenant-setting-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; gap: 9px; padding-top: 13px; }
+.tenant-setting-form label { display: grid; gap: 5px; color: var(--muted); font-size: 9px; font-weight: 600; }
+.tenant-setting-form input { width: 100%; min-width: 0; height: 35px; padding: 0 9px; border: 1px solid var(--line); border-radius: 6px; outline: none; color: var(--ink); background: var(--panel); font-size: 10px; }
+.tenant-setting-form input:focus { border-color: var(--teal); }.tenant-setting-form .button { height: 35px; padding: 0 10px; font-size: 10px; }
+.tenant-setting-form .form-error { grid-column: 1 / -1; margin: 0; }
+.tenant-scope-note { display: flex; align-items: flex-start; gap: 6px; margin: 13px 0 0; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.tenant-scope-note svg { flex: 0 0 auto; color: var(--teal); }
+.tenant-error { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; padding: 11px 13px; border: 1px solid color-mix(in srgb, var(--coral) 35%, var(--line)); border-radius: 7px; color: var(--coral); background: color-mix(in srgb, var(--coral) 8%, var(--panel)); font-size: 11px; }
+.tenant-management-page .company-form textarea { min-height: 72px; resize: vertical; }
+
+@media (max-width: 900px) {
+  .tenant-management-grid { grid-template-columns: 1fr; }
+  .tenant-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .tenant-summary-grid { grid-template-columns: 1fr; gap: 9px; }
+  .tenant-summary-card { padding: 12px 14px; }
+  .tenant-list-panel, .tenant-settings-panel { padding: 16px; }
+  .tenant-list { grid-template-columns: 1fr; }
+  .tenant-setting-form { grid-template-columns: 1fr 1fr; }
+  .tenant-setting-form .button { grid-column: 1 / -1; justify-self: start; }
+}

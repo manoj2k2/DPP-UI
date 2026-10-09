@@ -2,6 +2,17 @@ You are a Senior React Architect and UI/UX Lead.
 
 Design and develop a production-ready Digital Product Passport (DPP) web application frontend that integrates with an existing .NET 8 REST API backend.
 
+DPP SaaS Platform
+├─ Company Profile
+├─ Product Repository
+├─ PCF Management
+├─ Supplier Data Collection
+├─ Access Management
+├─ QR Code Generation
+├─ DPP Report Generation
+├─ Catena-X Connector
+└─ EU Registry Integration
+
 ## Technology Stack
 
 - React 19+
